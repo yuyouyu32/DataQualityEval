@@ -39,7 +39,7 @@ def unit_test():
     # Example usage
     file_path = '/Users/yuyouyu/WorkSpace/Lab106/MinePaper/RL-for-Inverse-Design/Dmax_data/New Data/data_processed.xlsx'  # Replace with your file path
     drop_columns = ['Chemical compostion（at.%）', "Chemical compostion"]  # Columns to drop
-    target_columns = ['Critical Diameter/thickness(mm)', 'Tg(K)', 'Tx(K)' , 'Tl(K)', 'σy(MPa)', 'Modulus (GPa)', 'Ε(%)']
+    target_columns = ['Critical Diameter/thickness(mm)', 'Tg(K)', 'Tx(K)' , 'Tl(K)', 'σy(MPa)', 'Modulus(GPa)', 'Ε(%)']
 
     dataloader = CustomDataLoader(file_path, drop_columns, target_columns)
 

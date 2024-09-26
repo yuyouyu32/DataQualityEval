@@ -66,7 +66,7 @@ class DimensionalityReducer(Model):
             raise ValueError("Method must be 'PCA' or 't-SNE'")
         reduced_results = self.models[method]['reduced_results']
 
-        plt.figure(figsize=(10, 8))
+        plt.figure(figsize=(8, 8))
         plt.scatter(reduced_results[:, 0], reduced_results[:, 1], alpha=0.5, label='Data Points')
         
         reduced_x = reducer_x.transform(x)
@@ -92,7 +92,7 @@ class DimensionalityReducer(Model):
 def unit_test():
     data_path = '../data/ALL_data_grouped_processed_predict.xlsx'  # Replace with your file path
     drop_columns = ['BMGs', "Chemical composition", 'cls_label']
-    target_columns = ['Tg(K)', 'Tx(K)', 'Tl(K)', 'Dmax(mm)', 'yield(MPa)', 'Modulus (GPa)', 'Ε(%)']
+    target_columns = ['Tg(K)', 'Tx(K)', 'Tl(K)', 'Dmax(mm)', 'yield(MPa)', 'Modulus(GPa)', 'Ε(%)']
     rd_models = DimensionalityReducer(data_path, drop_columns, target_columns)
     import pandas as pd
     all_data = pd.read_excel(data_path).drop(columns=drop_columns)

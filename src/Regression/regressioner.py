@@ -77,7 +77,7 @@ class Regressioner(Model):
 def unit_test():
     data_path = '../data/ALL_data_grouped_processed.xlsx'  # Replace with your file path
     drop_columns = ['BMGs', "Chemical composition", 'cls_label']
-    target_columns = ['Tg(K)', 'Tx(K)', 'Tl(K)', 'Dmax(mm)', 'yield(MPa)', 'Modulus (GPa)', 'Ε(%)']
+    target_columns = ['Tg(K)', 'Tx(K)', 'Tl(K)', 'Dmax(mm)', 'yield(MPa)', 'Modulus(GPa)', 'Ε(%)']
 
     import pandas as pd
     df = pd.read_excel(data_path)
