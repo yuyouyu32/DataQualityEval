@@ -17,6 +17,7 @@ class DimensionalityReducer(Model):
         self.original_x = original_data.drop(columns=target_columns)
         self.original_y = original_data[target_columns]
         self.models = self.reduce_original_data(self.original_x, self.original_y)
+        logger.info("DimensionalityReducer initialized.")
     
     def reduce_original_data(self, x, y):
         results = {}
@@ -76,7 +77,6 @@ class DimensionalityReducer(Model):
             reduced_all_data = reducer.fit_transform(np.hstack((np.vstack((self.models[method]['reduced_x'], reduced_x)), np.vstack((self.original_y, y)))))
             reduced_data = reduced_all_data[-1].reshape(1, -1)
             
-            
         plt.scatter(reduced_data[:, 0], reduced_data[:, 1], color='red', label='Input Point', s=100, alpha=0.5)
         # 把x轴和y轴的刻度都用白色的字体显示
         plt.xticks(color='white')
@@ -86,8 +86,17 @@ class DimensionalityReducer(Model):
         plt.title(f"{method} Dimensionality Reduction")
         plt.legend()
         plt.grid()
+        plt.tight_layout()
         
         return plt
+    
+    def dim_reduce(self, x: np.ndarray, y: np.ndarray, methods):
+        logger.info("Dimensionality Reduction started...")
+        dim_reduce_plts = {}
+        for method in methods:
+            dim_reduce_plts[method] = self.reduce_and_visualize(x, y, method)
+        logger.info("Dimensionality Reduction finished.")
+        return dim_reduce_plts
 
 def unit_test():
     data_path = '../data/ALL_data_grouped_processed_predict.xlsx'  # Replace with your file path
@@ -100,8 +109,9 @@ def unit_test():
     point = all_data.sample(1)
     x = point.drop(columns=target_columns).to_numpy()
     y = point[target_columns].to_numpy()
-    rd_models.reduce_and_visualize(x, y, method='PCA')
-    rd_models.reduce_and_visualize(x, y, method='t-SNE')
+    dim_reduce_plts = rd_models.dim_reduce(x, y, ['PCA', 't-SNE'])
+    for method, plt in dim_reduce_plts.items():
+        plt.show()
 
 # python -m DimReduction.reducer
 if __name__ == '__main__':
