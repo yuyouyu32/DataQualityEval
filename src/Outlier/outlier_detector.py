@@ -19,7 +19,6 @@ class OutlierDetector(Model):
         self.x = self.scaler.fit_transform(x)
         self.methods = self.get_trained_methods()
         self.feature_columns = list(self.data.data.columns)
-        print(self.feature_columns)
         self.methods_description = {
             "BoxPlot": "原理：利用四分位数，定义1.5倍IQR（四分位距）之外的点为离群点。\n结果解释：如果数据点在上下四分位数1.5倍IQR之外，则被认为是离群点，返回True，否则返回False。",
             "ZScore": "原理：计算数据点与均值的标准差倍数，超过设定阈值的视为离群点。\n结果解释：计算每个数据点的Z分数，若Z分数超过设定的阈值（通常为3），则视为离群点，返回True，否则返回False。",
@@ -224,8 +223,8 @@ def unit_test():
     methods = ['BoxPlot', 'ZScore', 'DBSCAN', 'KMeans']
     results, plts = detector.outlier_detect(x, methods)
     print(results)
-    for method_name, plt in plts.items():
-        plt.show()
+    # for method_name, plt in plts.items():
+    #     plt.show()
 
 # python -m Outlier.outlier_detector
 if __name__ == '__main__':

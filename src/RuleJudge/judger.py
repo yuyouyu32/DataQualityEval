@@ -100,17 +100,18 @@ class RuleJudger(Model):
         similar_points = sorted(similar_points, key=lambda point: point[1])
         indexes = [point[0] for point in similar_points]
         if len(indexes) > 0:
-            temp_str = "📌 找到了以下相似的BMGs："
+            similar_bmgs = "📌 在数据集中找到了以下相似的BMGs："
             for index in indexes:
                 BMGs = self.original_data.loc[index, 'BMGs']
-                temp_str += f"\n    - BMGs: {BMGs}"
+                similar_bmgs += f"\n    - BMGs: {BMGs}"
                 for target_column in self.target_columns:
                     if not np.isnan(self.original_data.loc[index, target_column]):
-                        temp_str += f" {target_column}: {self.original_data.loc[index, target_column]}"
-            check_results.append({'info': temp_str})
+                        similar_bmgs += f" {target_column}: {self.original_data.loc[index, target_column]}"
+            check_results.append({'info': similar_bmgs})
         else:
+            similar_bmgs = None
             check_results.append({'warning': f'⚠️ 没有找到与输入点相似的点。'})
-        return check_results
+        return check_results, similar_bmgs
     
     @staticmethod
     def format_messages(messages):
@@ -152,10 +153,10 @@ class RuleJudger(Model):
         all_check_results.extend(composition_check_results)
         targets_check_results, input_point = self.judge_targets(input_point, x)
         all_check_results.extend(targets_check_results)
-        similar_points_results = self.find_similar_points(x)
+        similar_points_results, similar_bmgs = self.find_similar_points(x)
         all_check_results.extend(similar_points_results)
         md_str = self.format_messages(all_check_results)
-        return md_str, input_point, x
+        return md_str, input_point, x, similar_bmgs
         
 def unit_test():
     data_path = '../data/ALL_data_grouped_processed.xlsx'  # Replace with your file path
@@ -173,10 +174,11 @@ def unit_test():
         "Modulus(GPa)": "190",
         "Ε(%)": "2.35"
     }
-    md_str, input_point, x = judger.judge(test_point)
+    md_str, input_point, x, similiar_bmg = judger.judge(test_point)
     print(md_str)
     print(input_point)
     print(x)
+    print(similiar_bmg)
     
 
 # python -m RuleJudge.judger

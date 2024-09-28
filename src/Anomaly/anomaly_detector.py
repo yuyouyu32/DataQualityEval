@@ -167,8 +167,8 @@ def unit_test():
     models = ['IsolationForest', 'OneClassSVM', 'LocalOutlierFactor', 'GaussianMixture', 'Autoencoder']
     results, plts = detector.anomaly_detect(x, models)
     print(results)
-    for model_name, plt in plts.items():
-        plt.show()
+    # for model_name, plt in plts.items():
+    #     plt.show()
 
 
 # python -m Anomaly.anomaly_detector
