@@ -19,13 +19,13 @@
     ],
     "Point":
     {
-        "composition": "1",
-        "Dmax(mm)": "1",
-        "Tg(K)": "2",
-        "Tx(K)": "2",
-        "Tl(K)": "3",
-        "yield(MPa)": "3",
-        "Modulus(GPa)": "4",
-        "Ε(%)": "5"
+        "Composition": "Al20(CoCrCuFeMnNiTiV)80",
+        "Dmax(mm)": "13",
+        "Tg(K)": "345",
+        "Tx(K)": "467",
+        "Tl(K)": "831",
+        "yield(MPa)": "1234",
+        "Modulus(GPa)": "164",
+        "Ε(%)": "23"
     }
 }
