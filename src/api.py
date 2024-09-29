@@ -70,7 +70,7 @@ def parse_params(input_data: dict):
     global_variable['anomaly'] = input_data.get('anomaly', ['IsolationForest', 'OneClassSVM', 'LocalOutlierFactor', 'GaussianMixture', 'Autoencoder'])
     global_variable['outlier'] = input_data.get('outlier', ['BoxPlot', 'ZScore', 'DBSCAN', 'KMeans'])
     global_variable['regression'] = input_data.get('regression', ['ElasticNet', 'SVR', 'RandomForestRegressor', 'KNeighborsRegressor', 'XGBRegressor'])
-    logger.info(f"Params parsed: {global_variable}")
+    # logger.info(f"Params parsed: {global_variable}")
 
 
 async def process_llm_response(llm_func, input_point, results, model_name, plt_key=None, plts=None, result_key=None):
@@ -85,17 +85,17 @@ async def process_llm_response(llm_func, input_point, results, model_name, plt_k
             # 同时将数据写入内存缓冲区
             output_buffer.write(item)
 
+        # 当流结束时，保存缓冲区内容
+        if result_key:
+            global_variable[result_key] = output_buffer.getvalue()
+            logger.info(f"LLM output saved to {result_key}")
+
     # 如果有图像数据，保存到 global_variable
     if plt_key and plts:
         global_variable[plt_key] = plts
 
     # 处理流式响应
     response = StreamingResponse(event_stream(), media_type="text/event-stream")
-
-    # 在响应结束后保存结果
-    if result_key:
-        global_variable[result_key] = output_buffer.getvalue()
-        logger.info(f"LLM output saved to {result_key}")
 
     return response
 
@@ -233,6 +233,7 @@ async def summary(request: Request):
     for key in ['eval_llm_output', 'regression_llm_output', 'anomaly_llm_output', 'outlier_llm_output']:
         if key in global_variable:
             llm_ana_results[key] = global_variable[key]
+    logger.info(f"Summary input: {llm_ana_results}")
     return await process_llm_response(
         llm_func=llm_summary,
         input_point=None,

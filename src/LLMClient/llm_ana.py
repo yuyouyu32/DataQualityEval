@@ -86,6 +86,8 @@ async def llm_summary(input_point, llm_ana_results, model_name: str = 'gpt-4o'):
     # 定义多线程执行的函数
     def process_summary(key, full_report):
         user_prompt = chunk_summary_prompt[key].format(full_report=full_report)
+        print(key)
+        print(f"User prompt: {user_prompt}")
         return key, get_rsp_from_GPT(system_prompt, user_prompt, model_name=model_name, stream=False)
     
     # 使用多线程执行每个报告的处理
