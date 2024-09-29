@@ -114,7 +114,9 @@ class OutlierDetector(Model):
         plt.xticks(np.arange(1, x_combined.shape[1] + 1), self.feature_columns, rotation=45, fontsize=4, ha='right')
         plt.ylabel('Value')
         plt.tight_layout()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
 
     def plot_zscore(self, x):
         x = self.scaler.transform(x)
@@ -130,7 +132,9 @@ class OutlierDetector(Model):
         plt.xlabel('Sample Index')
         plt.ylabel('Z-Score')
         plt.tight_layout()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
 
     def plot_dbscan(self, x):
         # 标准化输入数据
@@ -164,7 +168,9 @@ class OutlierDetector(Model):
         plt.title('DBSCAN Clustering for Outlier Detection')
         plt.tight_layout()
         plt.legend()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
 
 
     def plot_kmeans(self, x):
@@ -193,7 +199,9 @@ class OutlierDetector(Model):
         plt.title('KMeans Clustering for Outlier Detection')
         plt.tight_layout()
         plt.legend()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
 
 
     def outlier_detect(self, x, methods):

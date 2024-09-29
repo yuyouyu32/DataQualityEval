@@ -104,7 +104,9 @@ class AnomalyDetector(Model):
         plt.colorbar(label='Anomaly Score')
         plt.title('Isolation Forest Anomaly Detection')
         plt.tight_layout()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
 
     def plot_lof(self, x):
         model = self.models['LocalOutlierFactor']
@@ -121,7 +123,9 @@ class AnomalyDetector(Model):
         plt.colorbar(label='LOF Score')
         plt.title('Local Outlier Factor Anomaly Detection')
         plt.tight_layout()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
 
     def plot_gmm(self, x):
         model = self.models['GaussianMixture']
@@ -136,7 +140,9 @@ class AnomalyDetector(Model):
         plt.colorbar(label='Log Likelihood')
         plt.title('Gaussian Mixture Model Anomaly Detection')
         plt.tight_layout()
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
         
     def anomaly_detect(self, x, models):
         logger.info(f"Anomaly detection started...")

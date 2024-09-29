@@ -1,6 +1,6 @@
 from LLMClient.llm_call import get_rsp_from_GPT
 from LLMClient.prompts import *
-
+from asyncio import sleep
 
 def construct_data_str(input_point):
     data_str = f"Composition: {input_point['Composition']} "
@@ -15,14 +15,15 @@ def construct_data_str(input_point):
     return data_str
     
 
-def llm_eval(input_point, similar_bmgs):
+async def llm_eval(input_point, similar_bmgs, model_name: str='gpt-4o'):
     sys_prompt = EvalueSystem
     data_str = construct_data_str(input_point)
     user_prompt = EvalueUser.format(rule=Rules, similar_bmgs=similar_bmgs, data=data_str)
-    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt):
+    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.02) 
 
-def llm_regression(input_point, regression_results):
+async def llm_regression(input_point, regression_results, model_name: str='gpt-4o'):
     regression_results_str = []
     for model, content in regression_results.items():
         regression_results_str.append(f"{model} 模型：")
@@ -39,10 +40,11 @@ def llm_regression(input_point, regression_results):
     regression_results_str  = "\n".join(regression_results_str)
     sys_prompt = RegressionSystem
     user_prompt = RegressionUser.format(data=data_str, regression_results=regression_results_str)
-    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt):
+    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.02) 
 
-def llm_anomaly(input_point, anomaly_results):
+async def llm_anomaly(input_point, anomaly_results, model_name: str='gpt-4o'):
     anomaly_result_str = []
     for model, content in anomaly_results.items():
         anomaly_result_str.append(f"{model} 模型：")
@@ -52,10 +54,11 @@ def llm_anomaly(input_point, anomaly_results):
     sys_prompt = AnomalySystem
     data_str = construct_data_str(input_point)
     user_prompt = AnomalyUser.format(data=data_str, anomaly_results=anomaly_result_str)
-    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt):
+    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.02) 
         
-def llm_outlier(input_point, outlier_results):
+async def llm_outlier(input_point, outlier_results, model_name: str='gpt-4o'):
     outlier_result_str = []
     for model, content in outlier_results.items():
         outlier_result_str.append(f"{model} 模型：")
@@ -65,5 +68,6 @@ def llm_outlier(input_point, outlier_results):
     sys_prompt = OutlierSystem
     data_str = construct_data_str(input_point)
     user_prompt = OutlierUser.format(data=data_str, outlier_results=outlier_result_str)
-    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt):
+    for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.02) 

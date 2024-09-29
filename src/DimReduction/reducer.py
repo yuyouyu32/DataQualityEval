@@ -88,7 +88,9 @@ class DimensionalityReducer(Model):
         plt.grid()
         plt.tight_layout()
         
-        return plt
+        plt_obj = plt.gcf()
+        plt.close()
+        return plt_obj
     
     def dim_reduce(self, x: np.ndarray, y: np.ndarray, methods):
         logger.info("Dimensionality Reduction started...")

@@ -1,0 +1,37 @@
+{
+    "model_name": "GPT-4o",
+    "reduce": [
+        "PCA",
+        "t-SNE"
+    ],
+    "anomaly": [
+        "IsolationForest",
+        "OneClassSVM",
+        "LocalOutlierFactor",
+        "GaussianMixture",
+        "Autoencoder"
+    ],
+    "outlier": [
+        "BoxPlot",
+        "ZScore",
+        "DBSCAN",
+        "KMeans"
+    ],
+    "regression": [
+        "ElasticNet",
+        "SVR",
+        "RandomForestRegressor",
+        "KNeighborsRegressor",
+        "XGBRegressor"
+    ],
+    "point": {
+        "Composition": "Al20(CoCrCuFeMnNiTiV)80",
+        "Dmax(mm)": "13",
+        "Tg(K)": "345",
+        "Tx(K)": "467",
+        "Tl(K)": "831",
+        "yield(MPa)": "1234",
+        "Modulus(GPa)": "164",
+        "Ε(%)": "23"
+    }
+}

@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class RuleJudger(Model):
     def __init__(self, data_path, drop_columns, target_columns, regressioner: Regressioner):
         super().__init__(data_path, drop_columns, target_columns)
+        self.drop_columns = drop_columns
         self.original_data = pd.read_excel(data_path)
         self.thresholds = self.get_column_thresholds()
         self.feature_columns = list(self.data.data.drop(columns=target_columns).columns)
@@ -132,6 +133,21 @@ class RuleJudger(Model):
         
         return md_string
     
+    def construct_full_x_y(self, x, input_point):
+        results = {}
+        for target_name in self.target_columns:
+            if f"{target_name}(predicted)" in input_point:
+                results[target_name] = input_point[f"{target_name}(predicted)"]
+            else:
+                results[target_name] = input_point[target_name]
+                
+        for column_name, value in zip(self.feature_columns, x):
+            results[column_name] = value
+        all_columns = self.original_data.drop(columns=self.drop_columns).columns
+        y = np.array([results[column] for column in all_columns if column in self.target_columns])
+        full_x_y = np.array([results[column] for column in all_columns])
+        return full_x_y, y
+    
     def judge(self, input_point):
         """
         input_point:
@@ -156,8 +172,9 @@ class RuleJudger(Model):
         similar_points_results, similar_bmgs = self.find_similar_points(x)
         all_check_results.extend(similar_points_results)
         md_str = self.format_messages(all_check_results)
-        return md_str, input_point, x, similar_bmgs
-        
+        full_x_y, y = self.construct_full_x_y(x, input_point)
+        return md_str, input_point, x, y, full_x_y, similar_bmgs
+    
 def unit_test():
     data_path = '../data/ALL_data_grouped_processed.xlsx'  # Replace with your file path
     drop_columns = ['BMGs', "Chemical composition", 'cls_label']
@@ -174,12 +191,13 @@ def unit_test():
         "Modulus(GPa)": "190",
         "Ε(%)": "2.35"
     }
-    md_str, input_point, x, similiar_bmg = judger.judge(test_point)
+    md_str, input_point, x, y, full_x_y, similiar_bmg = judger.judge(test_point)
     print(md_str)
     print(input_point)
     print(x)
+    print(y)
+    print(full_x_y)
     print(similiar_bmg)
-    
 
 # python -m RuleJudge.judger
 if __name__ == "__main__":
