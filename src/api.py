@@ -222,9 +222,9 @@ async def get_plots():
         filename = f"{uuid.uuid4()}.png"
         filepath = os.path.join("static", filename)
         plt_obj.savefig(filepath)
-        url = f"/static/{filename}"
+        url = f"http://127.0.0.1:8000/static/{filename}"
         urls.append(url)
-    return {"plot_urls": urls}
+    return urls
     
 
 @app.post("/get-summary")
