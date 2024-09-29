@@ -101,6 +101,10 @@ class OutlierDetector(Model):
             raise ValueError(f"Unknown method: {method_name}")
 
     def plot_boxplot(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         x = self.scaler.transform(x)
         x_combined = np.vstack((self.x, x))
         plt.figure(figsize=(8, 6))
@@ -119,6 +123,10 @@ class OutlierDetector(Model):
         return plt_obj
 
     def plot_zscore(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         x = self.scaler.transform(x)
         x_combined = np.vstack((self.x, x))
         z_scores = np.abs((x_combined - np.mean(self.x, axis=0)) / np.std(self.x, axis=0))
@@ -137,6 +145,10 @@ class OutlierDetector(Model):
         return plt_obj
 
     def plot_dbscan(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         # 标准化输入数据
         x = self.scaler.transform(x)
         # 将输入数据与已有数据结合
@@ -174,6 +186,10 @@ class OutlierDetector(Model):
 
 
     def plot_kmeans(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         # 标准化输入数据
         x = self.scaler.transform(x)
         # 将输入数据与已有数据结合

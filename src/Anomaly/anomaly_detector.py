@@ -88,6 +88,10 @@ class AnomalyDetector(Model):
             return reconstruction_error
 
     def plot_isolation_forest(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         model = self.models['IsolationForest']
         x = self.scaler.transform(x)
         combine_x = np.vstack((self.x, x))
@@ -109,6 +113,10 @@ class AnomalyDetector(Model):
         return plt_obj
 
     def plot_lof(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         model = self.models['LocalOutlierFactor']
         x = self.scaler.transform(x)
         combine_x = np.vstack((self.x, x))
@@ -128,6 +136,10 @@ class AnomalyDetector(Model):
         return plt_obj
 
     def plot_gmm(self, x):
+        if len(x.shape) == 1:
+            x = x.reshape(1, -1)
+        elif len(x.shape) > 2:
+            raise ValueError("Input x should be a 1D array or a 2D array.")
         model = self.models['GaussianMixture']
         x = self.scaler.transform(x)
         combine_x = np.vstack((self.x, x))

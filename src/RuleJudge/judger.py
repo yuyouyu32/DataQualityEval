@@ -52,12 +52,12 @@ class RuleJudger(Model):
     def judge_composition(self, elements: dict, chem: str) -> Tuple[str, str]:
         check_results = []
         if sum(elements.values()) != 100:
-            check_results.append({'error': f'❌ BMGs的元素总和不等于100，请检查或使用下面修正的成分，目前解析的BMGs成分为{chem}，建议删除中括号等复杂计算方式，直接输入元素百分比，如`Al20Cu80`。'})
+            check_results.append({'error': f'BMGs的元素总和不等于100，请检查或使用下面修正的成分，目前解析的BMGs成分为{chem}，建议删除中括号等复杂计算方式，直接输入元素百分比，如`Al20Cu80`。'})
             total = sum(elements.values())
             elements = {key: round(100 * value / total, 2) for key, value in elements.items()}
-            check_results.append({'warning': f'⚠️ BMGs的元素总和不等于100，已启动自动修正，修正后的BMGs成分为{elements}。'})
+            check_results.append({'warning': f'BMGs的元素总和不等于100，已启动自动修正，修正后的BMGs成分为{chem}。'})
         else:
-            check_results.append({'info': f'✅ BMGs的元素总和等于100，BMGs成分为{elements}。'})
+            check_results.append({'info': f'BMGs的元素总和等于100，BMGs成分为{chem}。'})
         return check_results, elements, chem
 
     def get_composition_features(self, elements: dict) -> np.ndarray:
@@ -73,22 +73,22 @@ class RuleJudger(Model):
             # 数据不存在或者为空或者不是数字, 数字是浮点数
             try:
                 input_point[column] = float(input_point[column])
-                logger.info(f"column: {column} is not numeric")
             except:
+                logger.info(f"column: {column} is not numeric")
                 input_point[column] = ""
             if column not in input_point or not input_point[column]:
                 predicted_value = round(self.regressioner.predict(x, column), 2)
-                check_results.append({'warning': f'⚠️ {column}的数据不存在或者为空或者不是数字，已启动自动预测，预测值为{predicted_value}。'})
+                check_results.append({'warning': f'{column}的数据不存在或者为空或者不是数字，已启动自动预测，预测值为{predicted_value}。'})
                 input_point[f"{column}(predicted)"] = predicted_value
             else:
                 value = round(float(input_point[column]), 2)
                 min_value, max_value = self.thresholds[column]
                 if value < min_value:
-                    check_results.append({'warinig': f'⚠️ {column}的数据不在数据集的合理范围内，{column}为{value}，数据集中的最小值为{min_value}，请检查。'})
+                    check_results.append({'warinig': f'{column}的数据不在数据集的合理范围内，{column}为{value}，数据集中的最小值为{min_value}，请检查。'})
                 elif value > max_value:
-                    check_results.append({'warinig': f'⚠️ {column}的数据不在数据集的合理范围内，{column}为{value}，数据集中的最大值为{max_value}，请检查。'})
+                    check_results.append({'warinig': f'{column}的数据不在数据集的合理范围内，{column}为{value}，数据集中的最大值为{max_value}，请检查。'})
                 else:
-                    check_results.append({'info': f'✅ {column}的数据在合理范围内，{column}为{value}。'})
+                    check_results.append({'info': f'{column}的数据在合理范围内，{column}为{value}。'})
                 
         return check_results, input_point
     
@@ -101,7 +101,7 @@ class RuleJudger(Model):
         similar_points = sorted(similar_points, key=lambda point: point[1])
         indexes = [point[0] for point in similar_points]
         if len(indexes) > 0:
-            similar_bmgs = "📌 在数据集中找到了以下相似的BMGs："
+            similar_bmgs = "在数据集中找到了以下相似的BMGs：\n"
             for index in indexes:
                 BMGs = self.original_data.loc[index, 'BMGs']
                 similar_bmgs += f"\n    - BMGs: {BMGs}"
@@ -111,7 +111,7 @@ class RuleJudger(Model):
             check_results.append({'info': similar_bmgs})
         else:
             similar_bmgs = None
-            check_results.append({'warning': f'⚠️ 没有找到与输入点相似的点。'})
+            check_results.append({'warning': f'没有找到与输入点相似的点。'})
         return check_results, similar_bmgs
     
     @staticmethod

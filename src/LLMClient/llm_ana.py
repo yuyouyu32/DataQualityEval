@@ -1,6 +1,13 @@
+import concurrent.futures
+from asyncio import sleep
+from concurrent.futures import ThreadPoolExecutor
+
 from LLMClient.llm_call import get_rsp_from_GPT
 from LLMClient.prompts import *
-from asyncio import sleep
+from config import logging
+
+logger = logging.getLogger(__name__)
+
 
 def construct_data_str(input_point):
     data_str = f"Composition: {input_point['Composition']} "
@@ -67,4 +74,29 @@ async def llm_outlier(input_point, outlier_results, model_name: str='gpt-4o'):
     data_str = construct_data_str(input_point)
     user_prompt = OutlierUser.format(data=data_str, outlier_results=outlier_result_str)
     for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
+        yield chunk
+        
+async def llm_summary(input_point, llm_ana_results, model_name: str = 'gpt-4o'):
+    summary_report = {}
+    system_prompt = "你是一位经验丰富的数据质量分析师，从各种数据评估结果中提取关键信息，形成一个精简有效的总结报告。"
+    # 定义多线程执行的函数
+    def process_summary(key, full_report):
+        user_prompt = chunk_summary_prompt[key].format(full_report=full_report)
+        return key, get_rsp_from_GPT(system_prompt, user_prompt, model_name=model_name, stream=False)
+    
+    # 使用多线程执行每个报告的处理
+    with ThreadPoolExecutor(max_workers=len(llm_ana_results)) as executor:
+        # 提交任务并收集结果
+        future_to_key = {executor.submit(process_summary, key, full_report): key for key, full_report in llm_ana_results.items()}
+        
+        for future in concurrent.futures.as_completed(future_to_key):
+            key, summary = future.result()
+            summary_report[key] = summary
+    logger.info(f"Summary report: {summary_report}")
+    # 生成最终的总结报告
+    summary_system_prompt = SummarySystem
+    summary_user_prompt = SummaryUser.format(**summary_report)
+    
+    # 流式生成最终的总结报告
+    for chunk in get_rsp_from_GPT(summary_system_prompt, summary_user_prompt, model_name=model_name):
         yield chunk
