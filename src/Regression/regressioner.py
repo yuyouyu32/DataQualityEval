@@ -69,7 +69,7 @@ class Regressioner(Model):
         y = model.predict(x)[0]
         if norm_target:
             y = self.inverse_normal_targets(target_column, y)
-        y = min(max(y, self.minmax_record[target_column][0]), self.minmax_record[target_column][1])
+        y = round(min(max(y, self.minmax_record[target_column][0]), self.minmax_record[target_column][1]), 2)
         return y
     
     def predict_multi_x(self, x: np.ndarray, target_column: str, model_name: str, norm_features: bool=True, norm_target: bool=True):

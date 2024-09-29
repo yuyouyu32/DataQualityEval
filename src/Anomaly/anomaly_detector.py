@@ -75,17 +75,17 @@ class AnomalyDetector(Model):
                 orginal_x = self.data.data.to_numpy()
                 x_combined = np.vstack((orginal_x, x))
                 predictions = model.fit_predict(x_combined)
-                return predictions[-1]
+                return round(predictions[-1], 2)
             elif model_name == 'GaussianMixture':
                 # GaussianMixture 返回的是log likelihood, 我们可以用负对数似然来表示异常度
-                return -model.score_samples(x)[0]
+                return round(-model.score_samples(x)[0], 2)
             else:
                 return model.predict(x)[0]  # 返回1是正常点，-1是异常点
         else:
             # 自编码器，计算重建误差
             y_pred = model.predict(x)
             reconstruction_error = np.mean(np.abs(y_pred - x))
-            return reconstruction_error
+            return round(reconstruction_error, 2)
 
     def plot_isolation_forest(self, x):
         if len(x.shape) == 1:
