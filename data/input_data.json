@@ -1,5 +1,5 @@
 {
-    "model_name": "GPT-4o",
+    "model_name": "gpt-4o",
     "reduce": [
         "PCA",
         "t-SNE"
