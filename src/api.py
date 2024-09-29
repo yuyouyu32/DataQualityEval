@@ -106,7 +106,7 @@ def save_results(result_key, results, logger, log_msg):
 async def emulate_stream(md_str):
     for i in md_str:
         yield i
-        await sleep(0.03)
+        await sleep(0.01)
 
 @app.post("/get_rule_judge")
 async def get_rule_judge(request: Request):
@@ -208,7 +208,7 @@ async def get_dim_reduction(request: Request):
         global_variable['reduce_plts'] = reduce_plts
     return Response(status_code=200)
 
-@app.post("/get_plts")
+@app.get("/get_plts")
 async def get_plots():
     plt_objs = []
     if 'reduce_plts' in global_variable:

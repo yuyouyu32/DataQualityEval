@@ -100,6 +100,7 @@ class RuleJudger(Model):
         similar_points = [(index, distances[index]) for index in within_threshold_indices]
         similar_points = sorted(similar_points, key=lambda point: point[1])
         indexes = [point[0] for point in similar_points]
+        indexes = indexes[:3]
         if len(indexes) > 0:
             similar_bmgs = "在数据集中找到了以下相似的BMGs：\n"
             for index in indexes:
@@ -107,7 +108,7 @@ class RuleJudger(Model):
                 similar_bmgs += f"\n    - BMGs: {BMGs}"
                 for target_column in self.target_columns:
                     if not np.isnan(self.original_data.loc[index, target_column]):
-                        similar_bmgs += f" {target_column}: {self.original_data.loc[index, target_column]}"
+                        similar_bmgs += f" {target_column}: {round(self.original_data.loc[index, target_column],2)}"
             check_results.append({'info': similar_bmgs})
         else:
             similar_bmgs = None

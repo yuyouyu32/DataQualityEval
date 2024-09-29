@@ -44,7 +44,7 @@ def get_rsp_from_GPT(sys_prompt: str, user_prompt: str, model_name: str = 'gpt-4
     Returns:
         rsp (str): Full response content if stream=False
     """
-    logger.info(f"Getting response from GPT-4 with model {model_name}")
+    logger.info(f"Getting response from model {model_name}")
     client = OpenAI(base_url=os.environ.get('OPENAI_BASE_URL'), api_key=os.environ.get('OPENAI_API_KEY'))
     messages = [{'role': 'system', 'content': sys_prompt}, {'role': 'user', 'content': user_prompt}]
     

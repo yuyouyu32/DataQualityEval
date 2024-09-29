@@ -28,6 +28,7 @@ async def llm_eval(input_point, similar_bmgs, model_name: str='gpt-4o'):
     user_prompt = EvalueUser.format(rule=Rules, similar_bmgs=similar_bmgs, data=data_str)
     for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.01)
 
 async def llm_regression(input_point, regression_results, model_name: str='gpt-4o'):
     regression_results_str = []
@@ -48,6 +49,7 @@ async def llm_regression(input_point, regression_results, model_name: str='gpt-4
     user_prompt = RegressionUser.format(data=data_str, regression_results=regression_results_str)
     for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.01)
          
 
 async def llm_anomaly(input_point, anomaly_results, model_name: str='gpt-4o'):
@@ -62,6 +64,7 @@ async def llm_anomaly(input_point, anomaly_results, model_name: str='gpt-4o'):
     user_prompt = AnomalyUser.format(data=data_str, anomaly_results=anomaly_result_str)
     for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.01)
         
 async def llm_outlier(input_point, outlier_results, model_name: str='gpt-4o'):
     outlier_result_str = []
@@ -75,6 +78,7 @@ async def llm_outlier(input_point, outlier_results, model_name: str='gpt-4o'):
     user_prompt = OutlierUser.format(data=data_str, outlier_results=outlier_result_str)
     for chunk in get_rsp_from_GPT(sys_prompt, user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.01)
         
 async def llm_summary(input_point, llm_ana_results, model_name: str = 'gpt-4o'):
     summary_report = {}
@@ -100,3 +104,4 @@ async def llm_summary(input_point, llm_ana_results, model_name: str = 'gpt-4o'):
     # 流式生成最终的总结报告
     for chunk in get_rsp_from_GPT(summary_system_prompt, summary_user_prompt, model_name=model_name):
         yield chunk
+        await sleep(0.01)
